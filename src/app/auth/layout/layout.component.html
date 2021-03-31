@@ -1,0 +1,6 @@
+<div class="auth flex-center">
+  <app-login *ngIf="isLogin; else register"></app-login>
+  <ng-template #register>
+    <app-register></app-register>
+  </ng-template>
+</div>

@@ -1,0 +1,48 @@
+.auth {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -40%;
+    left: -5%;
+    width: 110%;
+    height: 90%;
+    background: #424ede;
+  }
+}
+.login {
+  text-align: center;
+  width: 95%;
+  max-width: 370px;
+  padding: 4em 3em 5em;
+  position: relative;
+  border-top: 5px solid #3f51b5;
+  box-sizing: border-box;
+
+  &:before {
+    content: "";
+    position: absolute;
+    border-radius: 0 0 7px 7px;
+    width: 90%;
+    height: 20px;
+    background: rgba(#fff, 0.2);
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  mat-form-field,
+  button {
+    width: 100%;
+  }
+}
+
+.logo {
+  width: 60px;
+}
