@@ -1,19 +1,15 @@
-<mat-card class="login">
-  <img src="../../../../assets/logo.svg" alt="" class="logo" />
-  <h1>Iniciar sesión</h1>
-  <p>Ingrese con sus datos a continuación</p>
+<div class="login">
+  <h2>Ingresar al set de herramientas</h2>
+  <p>¿Nuevo por aquí? <span>Registrarse</span></p>
   <form>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Correo electrónico</mat-label>
       <input type="text" matInput placeholder="ejemplo@gmail.com" />
-      <mat-icon matSuffix>email</mat-icon>
     </mat-form-field>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Contraseña</mat-label>
       <input type="password" matInput placeholder="******" />
-      <mat-icon matSuffix>lock</mat-icon>
     </mat-form-field>
     <button mat-raised-button color="primary">Ingresar</button>
   </form>
-  <p routerLink="/register">Registrarse</p>
-</mat-card>
+</div>
