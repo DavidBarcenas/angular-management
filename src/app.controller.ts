@@ -1,5 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+
+// TODO: crear endpoints para: orders, users, customers, brands
 
 @Controller()
 export class AppController {
@@ -8,27 +10,5 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
-  }
-
-  @Get('products')
-  getMyEndPoint(
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0,
-    @Query('brand') brand: string,
-  ) {
-    return { limit, offset, brand };
-  }
-
-  @Get('product/:productId')
-  getProduct(@Param('productId') productId: string) {
-    return `Search only the ${productId} product`;
-  }
-
-  @Get('categories/:categoryId/products/:productId')
-  getCategory(
-    @Param('categoryId') categoryId: string,
-    @Param('productId') productId: string,
-  ) {
-    return `The id ${categoryId} of the category that brings the product with id ${productId}`;
   }
 }
