@@ -1,12 +1,15 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // quitara del payload todos los atributos que no esten definidos en el dto
+      forbidNonWhitelisted: true, // mostrará un problema cuando se envien atributos demas
+    }),
+  );
+  await app.listen(3000);
 }
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrap();
