@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ParseIntPipe } from 'src/common/parse-int.pipe';
-import { CreateProductDto, UpdateProductDto } from 'src/dtos/products.dto';
+import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { ProductsService } from 'src/services/products.service';
 
 @Controller('products')
@@ -19,7 +19,7 @@ export class ProductsController {
   constructor(private productService: ProductsService) {}
 
   @Get()
-  getMyEndPoint(
+  getAll(
     @Query('limit') limit: number = 50,
     @Query('offset') offset: number = 0,
     @Query('brand') brand: string,
@@ -29,7 +29,7 @@ export class ProductsController {
 
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getProduct(@Param('productId', ParseIntPipe) productId: number) {
+  get(@Param('productId', ParseIntPipe) productId: number) {
     return this.productService.findOne(productId);
   }
 
