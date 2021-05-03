@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -23,9 +21,12 @@ export class UsersController {
   }
 
   @Get(':userId')
-  @HttpCode(HttpStatus.OK)
   get(@Param('userId', ParseIntPipe) userId: number) {
     return this.usersService.findOne(userId);
+  }
+  @Get(':userId/orders')
+  getOrders(@Param('userId', ParseIntPipe) userId: number) {
+    return this.usersService.getOrdersByUser(userId);
   }
 
   @Post()
