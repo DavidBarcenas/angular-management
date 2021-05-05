@@ -3,16 +3,16 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from 'src/dtos/user.dto';
-import { UsersService } from 'src/services/users.service';
+import { ApiTags } from '@nestjs/swagger';
+import { CreateUserDto, UpdateUserDto } from 'src/users/dto/user.dto';
+import { UsersService } from 'src/users/services/users.service';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -23,9 +23,12 @@ export class UsersController {
   }
 
   @Get(':userId')
-  @HttpCode(HttpStatus.OK)
   get(@Param('userId', ParseIntPipe) userId: number) {
     return this.usersService.findOne(userId);
+  }
+  @Get(':userId/orders')
+  getOrders(@Param('userId', ParseIntPipe) userId: number) {
+    return this.usersService.getOrdersByUser(userId);
   }
 
   @Post()

@@ -1,34 +1,33 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductsController } from './controllers/products.controller';
-import { CategoriesController } from './controllers/categories.controller';
-import { UsersController } from './controllers/users.controller';
-import { CustomersController } from './controllers/customers.controller';
-import { BrandsController } from './controllers/brands.controller';
-import { ProductsService } from './services/products.service';
-import { BrandService } from './services/brands.service';
-import { CategoriesService } from './services/categories.service';
-import { CustomersService } from './services/customers.service';
-import { UsersService } from './services/users.service';
+import { DatabaseModule } from './database/database.module';
+import { environments } from './environments';
+import { ProductsModule } from './products/products.module';
+import { UsersModule } from './users/users.module';
+import config from './config';
 
 @Module({
-  imports: [],
-  controllers: [
-    AppController,
-    ProductsController,
-    CategoriesController,
-    UsersController,
-    CustomersController,
-    BrandsController,
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: environments[process.env.NODE_ENV] || '.env',
+      isGlobal: true,
+      load: [config],
+      validationSchema: Joi.object({
+        API_KEY: Joi.number().required(),
+        DATABASE_NAME: Joi.string().required(),
+        DATABASE_PORT: Joi.number().required(),
+      }),
+    }),
+    HttpModule,
+    ProductsModule,
+    UsersModule,
+    DatabaseModule,
   ],
-  providers: [
-    AppService,
-    ProductsService,
-    BrandService,
-    CategoriesService,
-    CustomersService,
-    UsersService,
-  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
