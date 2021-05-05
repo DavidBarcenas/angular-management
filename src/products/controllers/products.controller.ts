@@ -10,6 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParseIntPipe } from 'src/common/parse-int.pipe';
 import {
   CreateProductDto,
@@ -17,10 +18,12 @@ import {
 } from 'src/products/dto/product.dto';
 import { ProductsService } from 'src/products/services/products.service';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productService: ProductsService) {}
 
+  @ApiOperation({ summary: 'List of all products' })
   @Get()
   getAll(
     @Query('limit') limit: number = 50,

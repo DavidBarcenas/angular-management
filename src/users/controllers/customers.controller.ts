@@ -10,12 +10,14 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   CreateCustomerDto,
   UpdateCustomerDto,
 } from 'src/users/dto/customer.dto';
 import { CustomersService } from 'src/users/services/customers.service';
 
+@ApiTags('customers')
 @Controller('customers')
 export class CustomersController {
   constructor(private customersService: CustomersService) {}
