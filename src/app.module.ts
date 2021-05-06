@@ -17,9 +17,9 @@ import config from './config';
       isGlobal: true,
       load: [config],
       validationSchema: Joi.object({
-        API_KEY: Joi.number().required(),
-        DATABASE_NAME: Joi.string().required(),
-        DATABASE_PORT: Joi.number().required(),
+        MONGO_DB: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
+        MONGO_PORT: Joi.number().required(),
       }),
     }),
     HttpModule,

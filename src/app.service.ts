@@ -8,10 +8,7 @@ export class AppService {
   constructor(@Inject('MONGO') private databse: Db) {}
 
   getTasks(): any {
-    const taskCollection = this.databse.collection(
-      process.env.DATABASE_TASK_COLLECTION,
-    );
-
+    const taskCollection = this.databse.collection('tasks');
     return taskCollection.find().toArray();
   }
 }

@@ -1,5 +1,7 @@
-import { Global, HttpModule, HttpService, Module } from '@nestjs/common';
+import { Global, HttpModule, Module } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { MongoClient } from 'mongodb';
+import config from 'src/config';
 
 @Global()
 @Module({
@@ -7,14 +9,16 @@ import { MongoClient } from 'mongodb';
   providers: [
     {
       provide: 'MONGO',
-      useFactory: async () => {
-        const uri = `mongodb://${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/?readPreference=primary`;
+      useFactory: async (configService: ConfigType<typeof config>) => {
+        const { connection, host, port, dbName } = configService.mongo;
+        const uri = `${connection}://${host}:${port}/?readPreference=primary`;
         const client = new MongoClient(uri);
         await client.connect();
 
-        const database = client.db(process.env.DATABASE_NAME);
+        const database = client.db(dbName);
         return database;
       },
+      inject: [config.KEY],
     },
   ],
   exports: ['MONGO'],
