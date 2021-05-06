@@ -9,23 +9,6 @@ import { environments } from './environments';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import config from './config';
-import { MongoClient } from 'mongodb';
-
-const uri = `mongodb://${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/?readPreference=primary`;
-const client = new MongoClient(uri);
-
-async function run() {
-  await client.connect();
-  const database = client.db(process.env.DATABASE_NAME);
-  const taskCollection = database.collection(
-    process.env.DATABASE_TASKS_COLLECTION,
-  );
-  const tasks = await taskCollection.find().toArray();
-
-  console.log('tareas', tasks);
-}
-console.log('uri', uri);
-// run();
 
 @Module({
   imports: [
