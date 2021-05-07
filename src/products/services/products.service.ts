@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 
 import {
   CreateProductDto,
+  FilterProductsDto,
   UpdateProductDto,
 } from 'src/products/dto/product.dto';
 import { Product } from 'src/products/entities/product.entity';
@@ -14,10 +15,20 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  async findAll() {
-    const products = await this.productModel.find().exec();
+  async findAll(params?: FilterProductsDto) {
+    if (params) {
+      const { limit, offset } = params;
+      return {
+        products: await this.productModel
+          .find()
+          .skip(offset)
+          .limit(limit)
+          .exec(),
+      };
+    }
+
     return {
-      products,
+      products: await this.productModel.find().exec(),
     };
   }
 

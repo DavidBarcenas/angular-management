@@ -9,6 +9,9 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, // quitara del payload todos los atributos que no esten definidos en el dto
       forbidNonWhitelisted: true, // mostrará un problema cuando se envien atributos demas
+      transformOptions: {
+        enableImplicitConversion: true, // Habilita el parseo de los parametros
+      },
     }),
   );
 

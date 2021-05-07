@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MongoIdPipe } from 'src/common/mongo-id.pipe';
-import { ParseIntPipe } from 'src/common/parse-int.pipe';
 import {
   CreateProductDto,
+  FilterProductsDto,
   UpdateProductDto,
 } from 'src/products/dto/product.dto';
 import { ProductsService } from 'src/products/services/products.service';
@@ -26,12 +26,8 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'List of all products' })
   @Get()
-  getAll(
-    @Query('limit') limit: number = 50,
-    @Query('offset') offset: number = 0,
-    @Query('brand') brand: string,
-  ) {
-    return this.productService.findAll();
+  getAll(@Query() params: FilterProductsDto) {
+    return this.productService.findAll(params);
   }
 
   @Get(':productId')
