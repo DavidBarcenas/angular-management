@@ -1,5 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
@@ -12,6 +14,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CreateCategoryDto } from './category.dto';
+import { CreateSubDocDto } from './sub-doc.dto';
 
 export class CreateProductDto {
   @IsString()
@@ -44,6 +47,16 @@ export class CreateProductDto {
   @IsMongoId()
   @IsNotEmpty()
   readonly brand: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  readonly subDoc: CreateSubDocDto;
+
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @Type(() => CreateSubDocDto)
+  readonly subDocs: CreateSubDocDto[];
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
