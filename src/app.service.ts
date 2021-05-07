@@ -1,16 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+import { Db } from 'mongodb';
 import config from './config';
 
 @Injectable()
 export class AppService {
-  constructor(
-    @Inject(config.KEY) private configService: ConfigType<typeof config>,
-  ) {}
+  constructor() {}
+  // @Inject('MONGO') private databse: Db
 
-  getHello(): any {
+  getTasks(): any {
+    // const taskCollection = this.databse.collection('tasks');
+    // return taskCollection.find().toArray();
     return {
-      key: this.configService.apiKey,
+      message: 'works!',
     };
   }
 }
