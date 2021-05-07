@@ -35,25 +35,25 @@ export class ProductsController {
 
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  get(@Param('productId', ParseIntPipe) productId: number) {
+  get(@Param('productId') productId: string) {
     return this.productService.findOne(productId);
   }
 
-  @Post()
-  create(@Body() payload: CreateProductDto) {
-    return this.productService.create(payload);
-  }
+  // @Post()
+  // create(@Body() payload: CreateProductDto) {
+  //   return this.productService.create(payload);
+  // }
 
-  @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateProductDto,
-  ) {
-    return this.productService.update(id, payload);
-  }
+  // @Put(':id')
+  // update(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() payload: UpdateProductDto,
+  // ) {
+  //   return this.productService.update(id, payload);
+  // }
 
-  @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.productService.delete(id);
-  }
+  // @Delete(':id')
+  // delete(@Param('id') id: number) {
+  //   return this.productService.delete(id);
+  // }
 }
