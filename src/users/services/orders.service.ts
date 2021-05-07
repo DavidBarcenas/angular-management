@@ -44,4 +44,16 @@ export class OrdersService {
   delete(id: string) {
     return this.orderModel.findByIdAndDelete(id);
   }
+
+  async removeProduct(id: string, productId: string) {
+    const order = await this.orderModel.findById(id);
+    order.products.pull(productId);
+    return order.save();
+  }
+
+  async addProduct(id: string, productsIds: string[]) {
+    const order = await this.orderModel.findById(id);
+    order.products.push(...productsIds);
+    return order.save();
+  }
 }
