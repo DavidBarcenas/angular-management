@@ -29,12 +29,13 @@ export class ProductsService {
           .find(filters)
           .skip(offset)
           .limit(limit)
+          .populate('brand')
           .exec(),
       };
     }
 
     return {
-      products: await this.productModel.find().exec(),
+      products: await this.productModel.find().populate('brand').exec(),
     };
   }
 
