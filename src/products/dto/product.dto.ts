@@ -7,6 +7,7 @@ import {
   IsString,
   IsUrl,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -45,4 +46,14 @@ export class FilterProductsDto {
   @Min(0)
   @IsOptional()
   offset: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  minPrice: number;
+
+  @ValidateIf((params) => params.minPrice)
+  @IsNumber()
+  @IsPositive()
+  maxPrice: number;
 }
