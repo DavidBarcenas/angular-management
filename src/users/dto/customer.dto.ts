@@ -1,13 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsNotEmpty,
-  IsPhoneNumber,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { CreateSkillsDto } from './skills.dto';
+import { IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
@@ -21,12 +13,6 @@ export class CreateCustomerDto {
   @IsPhoneNumber()
   @IsNotEmpty()
   readonly phone: string;
-
-  @IsArray()
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => CreateSkillsDto)
-  readonly skills: CreateSkillsDto[];
 }
 
 export class UpdateCustomerDto extends PartialType(CreateCustomerDto) {}
