@@ -8,6 +8,7 @@ import { environments } from './environments';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import config from './config';
+import Joi from 'joi';
 
 @Module({
   imports: [
@@ -15,6 +16,13 @@ import config from './config';
       envFilePath: environments[process.env.NODE_ENV] || '.env',
       isGlobal: true,
       load: [config],
+      validationSchema: Joi.object({
+        POSTGRES_DB: Joi.string().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_HOST: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().required(),
+      }),
     }),
     HttpModule,
     ProductsModule,
