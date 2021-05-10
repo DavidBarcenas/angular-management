@@ -1,18 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Client } from 'pg';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  constructor(@Inject('PG') private clientPg: Client) {}
+  constructor() {}
 
   getTasks(): any {
-    return new Promise((resolve, reject) => {
-      this.clientPg.query('SELECT * FROM tasks', (error, resp) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(resp.rows);
-      });
-    });
+    return {
+      message: 'hello world',
+    };
   }
 }

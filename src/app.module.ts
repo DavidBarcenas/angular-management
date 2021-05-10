@@ -7,8 +7,8 @@ import { DatabaseModule } from './database/database.module';
 import { environments } from './environments';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
+import * as Joi from 'joi';
 import config from './config';
-import Joi from 'joi';
 
 @Module({
   imports: [
