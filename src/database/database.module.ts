@@ -17,6 +17,8 @@ import config from 'src/config';
           password,
           username: user,
           database: dbName,
+          synchronize: true,
+          autoLoadEntities: true,
         };
       },
       inject: [config.KEY],
