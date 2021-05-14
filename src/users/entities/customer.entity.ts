@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Order } from './order.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -31,4 +33,7 @@ export class Customer {
   @OneToOne(() => User, (user) => user.customer, { nullable: true })
   @JoinColumn()
   user: User;
+
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 }
