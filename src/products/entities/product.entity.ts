@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Brand } from './brand.entity';
 
 @Entity()
 export class Product {
@@ -31,4 +33,11 @@ export class Product {
 
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updateAt: Date;
+
+  /**
+   * La entidad debil es quien debe tener la referencia
+   * Un producto solo puede tener una marca pero una marca puede tener muchos productos
+   */
+  @ManyToOne(() => Brand, (brand) => brand.products)
+  brand: Brand;
 }
