@@ -1,18 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { Product } from 'src/products/entities/product.entity';
+import { Category } from '../entities/category.entity';
 import {
   CreateProductDto,
   UpdateProductDto,
 } from 'src/products/dto/product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { BrandService } from './brands.service';
+import { Brand } from '../entities/brand.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
-    private brandsService: BrandService,
+    @InjectRepository(Category) private categoriesRepo: Repository<Category>,
+    @InjectRepository(Brand) private brandsRepo: Repository<Brand>,
   ) {}
 
   findAll() {
@@ -22,7 +25,9 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
-    const product = await this.productRepo.findOne(id);
+    const product = await this.productRepo.findOne(id, {
+      relations: ['brand', 'categories'],
+    });
     if (!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }
@@ -33,8 +38,15 @@ export class ProductsService {
     const newProduct = this.productRepo.create(data);
 
     if (data.brandId) {
-      const brand = await this.brandsService.findOne(data.brandId);
+      const brand = await this.brandsRepo.findOne(data.brandId);
       newProduct.brand = brand;
+    }
+
+    if (data.categoriesIds) {
+      const categories = await this.categoriesRepo.findByIds(
+        data.categoriesIds,
+      );
+      newProduct.categories = categories;
     }
 
     return this.productRepo.save(newProduct);
@@ -44,7 +56,7 @@ export class ProductsService {
     const product = await this.productRepo.findOne(id);
 
     if (changes.brandId) {
-      const brand = await this.brandsService.findOne(changes.brandId);
+      const brand = await this.brandsRepo.findOne(changes.brandId);
       product.brand = brand;
     }
 
