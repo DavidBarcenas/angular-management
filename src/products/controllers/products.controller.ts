@@ -6,10 +6,12 @@ import {
 } from 'src/products/dto/product.dto';
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -35,8 +37,16 @@ export class ProductsController {
   }
 
   @Post()
-  create(@Body() payload: CreateProductDto) {
-    return this.productService.create(payload);
+  async create(@Body() payload: CreateProductDto) {
+    return await this.productService.create(payload).catch((err) => {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Duplicate Product Name',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    });
   }
 
   @Put(':id')
