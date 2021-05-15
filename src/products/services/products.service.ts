@@ -6,6 +6,7 @@ import { Product } from 'src/products/entities/product.entity';
 import { Category } from '../entities/category.entity';
 import {
   CreateProductDto,
+  FilterProductDto,
   UpdateProductDto,
 } from 'src/products/dto/product.dto';
 import { Brand } from '../entities/brand.entity';
@@ -18,7 +19,15 @@ export class ProductsService {
     @InjectRepository(Brand) private brandsRepo: Repository<Brand>,
   ) {}
 
-  findAll() {
+  findAll(params?: FilterProductDto) {
+    if (params) {
+      const { limit, offset } = params;
+      return this.productRepo.find({
+        relations: ['brand'],
+        take: limit,
+        skip: offset,
+      });
+    }
     return this.productRepo.find({
       relations: ['brand'],
     });

@@ -1,12 +1,5 @@
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ProductsService } from 'src/products/services/products.service';
-import {
-  CreateProductDto,
-  UpdateProductDto,
-} from 'src/products/dto/product.dto';
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
@@ -17,7 +10,16 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { ProductsService } from 'src/products/services/products.service';
+import {
+  CreateProductDto,
+  FilterProductDto,
+  UpdateProductDto,
+} from 'src/products/dto/product.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -26,8 +28,8 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'List of all products' })
   @Get()
-  getAll() {
-    return this.productService.findAll();
+  getAll(@Query() params: FilterProductDto) {
+    return this.productService.findAll(params);
   }
 
   @Get(':productId')
