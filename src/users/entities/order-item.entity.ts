@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Product } from 'src/products/entities/product.entity';
 import {
   Column,
@@ -13,9 +14,11 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Exclude()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createAt: Date;
 
+  @Exclude()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updateAt: Date;
 
