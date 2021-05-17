@@ -1,50 +1,59 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
-import { Customer } from '../entities/customer.entity';
 import { Order } from '../entities/order.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor(
-    @InjectRepository(Order) private orderRepo: Repository<Order>,
-    @InjectRepository(Customer) private customerRepo: Repository<Customer>,
-  ) {}
+  constructor(@InjectModel(Order.name) private orderModel: Model<Order>) {}
 
   findAll() {
-    return this.orderRepo.find();
+    return this.orderModel
+      .find()
+      .populate('customer')
+      .populate('products')
+      .exec();
   }
 
-  async findOne(id: number) {
-    const order = await this.orderRepo.findOne(id, {
-      relations: ['items', 'items.product'],
-    });
+  async findOne(id: string) {
+    const order = await this.orderModel.findById(id);
     if (!order) {
       throw new NotFoundException(`Order #${id} not found`);
     }
     return order;
   }
 
-  async create(data: CreateOrderDto) {
-    const newOrder = new Order();
-    if (data.customerId) {
-      const customer = await this.customerRepo.findOne(data.customerId);
-      newOrder.customer = customer;
-    }
-    return this.orderRepo.save(newOrder);
+  create(payload: CreateOrderDto) {
+    const newOrder = new this.orderModel(payload);
+    return newOrder.save();
   }
 
-  async update(id: number, changes: UpdateOrderDto) {
-    const order = await this.orderRepo.findOne(id);
-    if (changes.customerId) {
-      const customer = await this.customerRepo.findOne(changes.customerId);
-      order.customer = customer;
+  update(id: string, payload: UpdateOrderDto) {
+    const order = this.orderModel.findByIdAndUpdate(id, {
+      $set: payload,
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order #${id} not found`);
     }
-    return this.orderRepo.save(order);
+
+    return order;
   }
 
-  remove(id: number) {
-    return this.orderRepo.delete(id);
+  delete(id: string) {
+    return this.orderModel.findByIdAndDelete(id);
+  }
+
+  async removeProduct(id: string, productId: string) {
+    const order = await this.orderModel.findById(id);
+    order.products.pull(productId);
+    return order.save();
+  }
+
+  async addProduct(id: string, productsIds: string[]) {
+    const order = await this.orderModel.findById(id);
+    order.products.push(...productsIds);
+    return order.save();
   }
 }

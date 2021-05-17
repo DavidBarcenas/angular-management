@@ -1,6 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -9,12 +11,14 @@ import {
   IsUrl,
   Min,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
+import { CreateCategoryDto } from './category.dto';
+import { CreateSubDocDto } from './sub-doc.dto';
 
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: `product's name` })
   readonly name: string;
 
   @IsString()
@@ -28,37 +32,53 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @IsPositive()
   readonly stock: number;
 
   @IsUrl()
   @IsNotEmpty()
   readonly image: string;
 
+  @ValidateNested()
   @IsNotEmpty()
-  @IsPositive()
-  readonly brandId: number;
+  @ApiProperty()
+  readonly category: CreateCategoryDto;
+
+  @IsMongoId()
+  @IsNotEmpty()
+  readonly brand: string;
 
   @IsNotEmpty()
+  @ValidateNested()
+  readonly subDoc: CreateSubDocDto;
+
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
   @IsArray()
-  readonly categoriesIds: number[];
+  @Type(() => CreateSubDocDto)
+  readonly subDocs: CreateSubDocDto[];
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 
-export class FilterProductDto {
-  @IsOptional()
+export class FilterProductsDto {
+  @IsNumber()
   @IsPositive()
+  @IsOptional()
   limit: number;
 
-  @IsOptional()
+  @IsNumber()
   @Min(0)
+  @IsOptional()
   offset: number;
 
-  @IsOptional()
+  @IsNumber()
   @IsPositive()
+  @IsOptional()
   minPrice: number;
 
+  @ValidateIf((params) => params.minPrice)
+  @IsNumber()
   @IsPositive()
-  @ValidateIf((item) => item.minPrice)
   maxPrice: number;
 }
