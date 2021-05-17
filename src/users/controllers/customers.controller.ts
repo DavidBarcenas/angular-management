@@ -11,7 +11,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { MongoIdPipe } from 'src/common/mongo-id.pipe';
 import {
   CreateCustomerDto,
   UpdateCustomerDto,
@@ -30,7 +29,7 @@ export class CustomersController {
 
   @Get(':customerId')
   @HttpCode(HttpStatus.OK)
-  get(@Param('customerId', MongoIdPipe) customerId: string) {
+  get(@Param('customerId', ParseIntPipe) customerId: number) {
     return this.customersService.findOne(customerId);
   }
 
@@ -41,14 +40,14 @@ export class CustomersController {
 
   @Put(':customerId')
   update(
-    @Param('customerId', MongoIdPipe) customerId: string,
+    @Param('customerId', ParseIntPipe) customerId: number,
     @Body() payload: UpdateCustomerDto,
   ) {
     return this.customersService.update(customerId, payload);
   }
 
   @Delete(':customerId')
-  delete(@Param('customerId', MongoIdPipe) customerId: string) {
+  delete(@Param('customerId', ParseIntPipe) customerId: number) {
     return this.customersService.delete(customerId);
   }
 }

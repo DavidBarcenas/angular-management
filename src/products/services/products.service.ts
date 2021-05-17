@@ -1,70 +1,116 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Between, FindConditions, Repository } from 'typeorm';
 
+import { Product } from 'src/products/entities/product.entity';
+import { Category } from '../entities/category.entity';
 import {
   CreateProductDto,
-  FilterProductsDto,
+  FilterProductDto,
   UpdateProductDto,
 } from 'src/products/dto/product.dto';
-import { Product } from 'src/products/entities/product.entity';
+import { Brand } from '../entities/brand.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectRepository(Product) private productRepo: Repository<Product>,
+    @InjectRepository(Category) private categoriesRepo: Repository<Category>,
+    @InjectRepository(Brand) private brandsRepo: Repository<Brand>,
   ) {}
 
-  async findAll(params?: FilterProductsDto) {
+  findAll(params?: FilterProductDto) {
     if (params) {
-      const filters: FilterQuery<Product> = {};
-      const { limit, offset, minPrice, maxPrice } = params;
+      const { limit, offset, maxPrice, minPrice } = params;
+      const where: FindConditions<Product> = {};
 
       if (minPrice && maxPrice) {
-        filters.price = { $gte: minPrice, $lte: maxPrice };
+        where.price = Between(minPrice, maxPrice);
       }
 
-      return {
-        products: await this.productModel
-          .find(filters)
-          .skip(offset)
-          .limit(limit)
-          .populate('brand')
-          .exec(),
-      };
+      return this.productRepo.find({
+        relations: ['brand'],
+        take: limit,
+        skip: offset,
+        where,
+      });
     }
-
-    return {
-      products: await this.productModel.find().populate('brand').exec(),
-    };
+    return this.productRepo.find({
+      relations: ['brand'],
+    });
   }
 
-  async findOne(id: string) {
-    const product = await this.productModel.findById(id).exec();
-    if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
-    }
-
-    return product;
-  }
-
-  create(payload: CreateProductDto) {
-    const newProduct = new this.productModel(payload);
-    return newProduct.save();
-  }
-
-  update(id: string, payload: UpdateProductDto) {
-    const product = this.productModel
-      .findByIdAndUpdate(id, { $set: payload }, { new: true })
-      .exec();
-
+  async findOne(id: number) {
+    const product = await this.productRepo.findOne(id, {
+      relations: ['brand', 'categories'],
+    });
     if (!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }
     return product;
   }
 
-  delete(id: string) {
-    return this.productModel.findByIdAndDelete(id);
+  async create(data: CreateProductDto) {
+    const newProduct = this.productRepo.create(data);
+
+    if (data.brandId) {
+      const brand = await this.brandsRepo.findOne(data.brandId);
+      newProduct.brand = brand;
+    }
+
+    if (data.categoriesIds) {
+      const categories = await this.categoriesRepo.findByIds(
+        data.categoriesIds,
+      );
+      newProduct.categories = categories;
+    }
+
+    return this.productRepo.save(newProduct);
+  }
+
+  async update(id: number, changes: UpdateProductDto) {
+    const product = await this.productRepo.findOne(id);
+
+    if (changes.brandId) {
+      const brand = await this.brandsRepo.findOne(changes.brandId);
+      product.brand = brand;
+    }
+
+    if (changes.categoriesIds) {
+      const categories = await this.categoriesRepo.findByIds(
+        changes.categoriesIds,
+      );
+      product.categories = categories;
+    }
+
+    this.productRepo.merge(product, changes);
+    return this.productRepo.save(product);
+  }
+
+  async addCategoryToProduct(productId: number, categoriesIds: number[]) {
+    const product = await this.productRepo.findOne(productId, {
+      relations: ['categories'],
+    });
+
+    const categories = await this.categoriesRepo.findByIds(categoriesIds);
+    product.categories = [...product.categories, ...categories];
+
+    return this.productRepo.save(product);
+  }
+
+  async removeCategoryByProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne(productId, {
+      relations: ['categories'],
+    });
+
+    product.categories = product.categories.filter(
+      (category) => category.id !== categoryId,
+    );
+
+    return this.productRepo.save(product);
+  }
+
+  remove(id: number) {
+    return this.productRepo.delete(id);
   }
 }

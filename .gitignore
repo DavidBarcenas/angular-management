@@ -34,4 +34,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 *.env
+/src/database/migrations
 /mongo_data
+/postgres_data
