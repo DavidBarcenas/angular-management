@@ -1,70 +1,44 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
 import { Brand } from './brand.entity';
-import { Category } from './category.entity';
+import { SubDoc, SubDocSchema } from './sub-doc.entity';
 
-@Entity({ name: 'products' })
-export class Product {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'varchar', length: 255, unique: true })
+@Schema()
+export class Product extends Document {
+  @Prop({ required: true })
   name: string;
 
-  @Column({ type: 'text' })
+  @Prop()
   description: string;
 
-  @Index()
-  @Column({ type: 'int' })
+  @Prop({ type: Number, index: true })
   price: number;
 
-  @Column({ type: 'int' })
+  @Prop({ type: Number })
   stock: number;
 
-  @Column({ type: 'varchar' })
+  @Prop()
   image: string;
 
-  @CreateDateColumn({
-    name: 'create_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createAt: Date;
+  @Prop(
+    raw({
+      name: { type: String },
+      image: { type: String },
+    }),
+  )
+  category: Record<string, any>;
 
-  @UpdateDateColumn({
-    name: 'update_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+  @Prop({
+    type: Types.ObjectId,
+    ref: Brand.name,
   })
-  updateAt: Date;
+  brand: Brand | Types.ObjectId;
 
-  /**
-   * La entidad debil es quien debe tener la referencia
-   * Un producto solo puede tener una marca pero una marca puede tener muchos productos
-   */
-  @ManyToOne(() => Brand, (brand) => brand.products)
-  @JoinColumn({ name: 'brand_id' })
-  brand: Brand;
+  @Prop({ type: SubDocSchema })
+  subDoc: SubDoc;
 
-  @ManyToMany(() => Category, (category) => category.products)
-  @JoinTable({
-    name: 'products_categories',
-    joinColumn: {
-      name: 'product_id',
-    },
-    inverseJoinColumn: {
-      name: 'categorie_id',
-    },
-  })
-  categories: Category[];
+  @Prop({ type: [SubDocSchema] })
+  subDocs: Types.Array<SubDoc>;
 }
+
+export const ProductSchema = SchemaFactory.createForClass(Product);

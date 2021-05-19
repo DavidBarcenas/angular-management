@@ -4,42 +4,40 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
+import { MongoIdPipe } from 'src/common/mongo-id.pipe';
+import { addProductsToOrderDto, CreateOrderDto } from '../dto/order.dto';
 import { OrdersService } from '../services/orders.service';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private orderService: OrdersService) {}
+  constructor(private ordersService: OrdersService) {}
 
   @Get()
   getAll() {
-    return this.orderService.findAll();
-  }
-
-  @Get(':orderId')
-  get(@Param('orderId', ParseIntPipe) orderId: number) {
-    return this.orderService.findOne(orderId);
+    return this.ordersService.findAll();
   }
 
   @Post()
   create(@Body() payload: CreateOrderDto) {
-    return this.orderService.create(payload);
+    return this.ordersService.create(payload);
   }
 
-  @Put(':orderId')
-  update(
-    @Param('orderId', ParseIntPipe) orderId: number,
-    @Body() payload: UpdateOrderDto,
+  @Put(':id/products')
+  updateProducts(
+    @Param('id') id: string,
+    @Body() payload: addProductsToOrderDto,
   ) {
-    return this.orderService.update(orderId, payload);
+    return this.ordersService.addProduct(id, payload.productsIds);
   }
 
-  @Delete(':orderId')
-  delete(@Param('orderId', ParseIntPipe) orderId: number) {
-    return this.orderService.remove(orderId);
+  @Delete(':id/product/:productId')
+  deleteProduct(
+    @Param('id', MongoIdPipe) id: string,
+    @Param('productId', MongoIdPipe) productId: string,
+  ) {
+    return this.ordersService.removeProduct(id, productId);
   }
 }

@@ -17,31 +17,35 @@ import { UsersService } from 'src/users/services/users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Get()
-  getAll() {
-    return this.usersService.findAll();
-  }
+  // @Get()
+  // getAll() {
+  //   return this.usersService.findAll();
+  // }
 
-  @Get(':userId')
-  get(@Param('userId', ParseIntPipe) userId: number) {
-    return this.usersService.findOne(userId);
-  }
+  // @Get(':userId')
+  // get(@Param('userId', ParseIntPipe) userId: number) {
+  //   return this.usersService.findOne(userId);
+  // }
+  // @Get(':userId/orders')
+  // getOrders(@Param('userId', ParseIntPipe) userId: number) {
+  //   return this.usersService.getOrdersByUser(userId);
+  // }
 
   @Post()
   create(@Body() payload: CreateUserDto) {
     return this.usersService.create(payload);
   }
 
-  @Put(':userId')
-  update(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Body() payload: UpdateUserDto,
-  ) {
-    return this.usersService.update(userId, payload);
-  }
+  // @Put(':userId')
+  // update(
+  //   @Param('userId', ParseIntPipe) userId: number,
+  //   @Body() payload: UpdateUserDto,
+  // ) {
+  //   return this.usersService.update(userId, payload);
+  // }
 
-  @Delete(':userId')
-  delete(@Param('userId', ParseIntPipe) userId: number) {
-    return this.usersService.remove(userId);
-  }
+  // @Delete(':userId')
+  // delete(@Param('userId', ParseIntPipe) userId: number) {
+  //   return this.usersService.delete(userId);
+  // }
 }

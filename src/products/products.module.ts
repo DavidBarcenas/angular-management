@@ -1,20 +1,30 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { BrandsController } from './controllers/brands.controller';
-import { BrandService } from './services/brands.service';
-import { Brand } from './entities/brand.entity';
 import { CategoriesController } from './controllers/categories.controller';
-import { CategoriesService } from './services/categories.service';
-import { Category } from './entities/category.entity';
 import { ProductsController } from './controllers/products.controller';
+import { Brand, BrandSchema } from './entities/brand.entity';
+import { Product, ProductSchema } from './entities/product.entity';
+import { BrandService } from './services/brands.service';
+import { CategoriesService } from './services/categories.service';
 import { ProductsService } from './services/products.service';
-import { Product } from './entities/product.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Brand, Category])],
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: Product.name,
+        schema: ProductSchema,
+      },
+      {
+        name: Brand.name,
+        schema: BrandSchema,
+      },
+    ]),
+  ],
   controllers: [ProductsController, CategoriesController, BrandsController],
   providers: [ProductsService, BrandService, CategoriesService],
-  exports: [ProductsService, TypeOrmModule],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

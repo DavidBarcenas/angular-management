@@ -1,5 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,7 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { environments } from './environments';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
-import * as Joi from 'joi';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 @Module({
@@ -17,17 +18,18 @@ import config from './config';
       isGlobal: true,
       load: [config],
       validationSchema: Joi.object({
-        POSTGRES_DB: Joi.string().required(),
-        POSTGRES_USER: Joi.string().required(),
-        POSTGRES_HOST: Joi.string().required(),
-        POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_PORT: Joi.number().required(),
+        API_KEY: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        MONGO_DB: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
+        MONGO_PORT: Joi.number().required(),
       }),
     }),
     HttpModule,
     ProductsModule,
     UsersModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
