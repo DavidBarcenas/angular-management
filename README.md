@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Next.js course from basic to advanced. Backend creation for an online store.
 
 ## Installation
 
@@ -56,6 +56,51 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+```
+
+## Notes
+
+Use the corresponding environment variables to run your application
+
+### Mongo
+
+```
+MONGO_DB
+MONGO_INITDB_ROOT_USERNAME
+MONGO_INITDB_ROOT_PASSWORD
+MONGO_PORT
+MONGO_HOST
+MONGO_CONNECTION
+API_KEY
+JWT_SECRET
+```
+
+### Postgres
+
+```
+POSTGRES_DB
+POSTGRES_USER
+POSTGRES_HOST
+POSTGRES_PASSWORD
+POSTGRES_PORT
+
+PGADMIN_EMAIL
+PGADMIN_PASSWORD
+
+TYPEORM_CONNECTION
+TYPEORM_HOST
+TYPEORM_USERNAME
+TYPEORM_PASSWORD
+TYPEORM_DATABASE
+TYPEORM_PORT
+TYPEORM_SYNCHRONIZE
+TYPEORM_LOGGING
+TYPEORM_ENTITIES
+
+TYPEORM_MIGRATIONS
+TYPEORM_MIGRATIONS_DIR
+TYPEORM_MIGRATIONS_TABLE_NAME
+
 ```
 
 ## Support
