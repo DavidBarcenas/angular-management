@@ -56,4 +56,8 @@ export class OrdersService {
     order.products.push(...productsIds);
     return order.save();
   }
+
+  ordersByCustomer(customer: string) {
+    return this.orderModel.findOne({ customer }).exec();
+  }
 }
