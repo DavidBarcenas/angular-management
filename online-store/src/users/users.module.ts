@@ -31,7 +31,12 @@ import { ProfileController } from './controllers/profile.controller';
       },
     ]),
   ],
-  controllers: [CustomersController, UsersController, OrdersController, ProfileController],
+  controllers: [
+    CustomersController,
+    UsersController,
+    OrdersController,
+    ProfileController,
+  ],
   providers: [CustomersService, UsersService, OrdersService],
   exports: [UsersService],
 })
