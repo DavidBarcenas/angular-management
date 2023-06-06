@@ -23,7 +23,7 @@ export class TasksService {
   }
 
   async update(id: string, task: UpdateTaskDto) {
-    return this.taskModel.findByIdAndUpdate(id, task, {new: true});
+    return this.taskModel.findByIdAndUpdate(id, task, { new: true });
   }
 
   async delete(id: string) {
